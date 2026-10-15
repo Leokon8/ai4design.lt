@@ -26,6 +26,7 @@
 }
 
 @font-face{font-family:"Nohemi";src:local("Nohemi"),local("Nohemi Medium"),local("Nohemi-Medium");font-weight:400 700}
+html,body{overflow-x:clip}
 *{box-sizing:border-box}
 body{
   margin:0;
@@ -53,6 +54,12 @@ a{color:inherit;text-decoration:none}
 .nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;transition:background .25s,box-shadow .25s,backdrop-filter .25s}
 .nav.stuck{background:rgba(254,254,255,.8);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);box-shadow:0 1px 0 var(--line)}
 .nav .wrap{transition:padding .25s}
+.menu-btn{display:none;margin-left:auto;place-items:center;width:42px;height:42px;border:0;border-radius:12px;background:transparent;color:var(--ink);cursor:pointer}
+.menu-btn:hover{background:rgba(124,77,255,.1)}
+.menu-btn .x{display:none}
+.nav.open .menu-btn .bars{display:none}
+.nav.open .menu-btn .x{display:block}
+.nav.open{background:rgba(254,254,255,.97)}
 .nav.stuck .wrap{padding-block:14px}
 .nav .wrap{display:flex;align-items:center;gap:24px;padding-block:22px}
 .logo{display:flex;align-items:baseline;gap:7px;font-weight:800;letter-spacing:-.02em}
@@ -261,8 +268,11 @@ footer{padding-block:64px 44px;border-top:1px solid transparent}
 .fb:hover{opacity:1;color:var(--violet)}
 
 @media (max-width:900px){
-  .navlinks{display:none}
-  .logo{margin-inline:auto}
+  .menu-btn{display:grid}
+  .navlinks{display:none;position:absolute;top:100%;left:0;right:0;flex-direction:column;gap:0;margin:0;padding:6px max(16px,env(safe-area-inset-right,0px)) 14px max(16px,env(safe-area-inset-left,0px));background:rgba(254,254,255,.97);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);box-shadow:0 18px 30px -22px rgba(43,28,110,.35),0 1px 0 var(--line)}
+  .nav.open .navlinks{display:flex}
+  .navlinks a{padding:14px 0;font-size:1.05rem;border-bottom:1px solid var(--line)}
+  .navlinks a:last-child{border-bottom:0}
   .hero .wrap{grid-template-columns:minmax(0,1fr);padding-block:24px 76px;text-align:center}
   .lede{margin-inline:auto}
   .robot{order:-1;width:min(100%,400px)}
@@ -285,7 +295,11 @@ footer{padding-block:64px 44px;border-top:1px solid transparent}
 <header class="nav" id="nav">
   <div class="wrap">
     <a class="logo" href="#pagrindinis"><span class="mark">ai</span><span class="word">4 DESIGN</span></a>
-    <nav class="navlinks">
+    <button class="menu-btn" id="menu-btn" type="button" aria-label="Meniu" aria-expanded="false" aria-controls="navlinks">
+      <svg class="bars" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      <svg class="x" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>
+    </button>
+    <nav class="navlinks" id="navlinks">
       <a href="#pagrindinis" data-nav="home">Pagrindinis</a>
       <a href="#es-parama" data-nav="es">ES Parama</a>
       <a href="#kontaktai" data-nav="contact">Kontaktai</a>
@@ -967,6 +981,12 @@ footer{padding-block:64px 44px;border-top:1px solid transparent}
   var n=document.getElementById('nav');
   function f(){n.classList.toggle('stuck',scrollY>12);}
   addEventListener('scroll',f,{passive:true});f();
+  var b=document.getElementById('menu-btn');
+  function setOpen(o){n.classList.toggle('open',o);b.setAttribute('aria-expanded',o?'true':'false');}
+  b.addEventListener('click',function(){setOpen(!n.classList.contains('open'));});
+  n.addEventListener('click',function(e){if(e.target.closest('.navlinks a, .logo'))setOpen(false);});
+  addEventListener('hashchange',function(){setOpen(false);});
+  addEventListener('resize',function(){if(innerWidth>900)setOpen(false);});
 })();
 </script>
 
