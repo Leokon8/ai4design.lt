@@ -4,7 +4,7 @@
 header('Content-Type: application/json; charset=utf-8');
 header('X-Content-Type-Options: nosniff');
 
-const TO_EMAIL   = 'info@ai4design.lt';      // kur gausite žinutes
+const TO_EMAIL   = 'sarunas.buzinskis@gmail.com'; // kur gausite žinutes
 const FROM_EMAIL = 'noreply@ai4design.lt';   // PRIVALO būti jūsų domeno adresas (kitaip laiškai krenta į šlamštą)
 
 function out($ok, $error = null, $code = 200) {
@@ -52,5 +52,5 @@ $name = str_replace(['<', '>', '"'], '', $name);
 $headers[1] = 'Reply-To: ' . $name . ' <' . $email . '>';
 
 $sent = mail(TO_EMAIL, $subject, $body, implode("\r\n", $headers), '-f' . FROM_EMAIL);
-if (!$sent) out(false, 'Nepavyko išsiųsti. Rašykite adresu ' . TO_EMAIL . '.', 500);
+if (!$sent) out(false, 'Nepavyko išsiųsti. Rašykite adresu info@ai4design.lt.', 500);
 out(true);
