@@ -1,0 +1,602 @@
+<!doctype html>
+<html lang="lt">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AI 4 DESIGN</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+
+<style>
+/* Layout: single-column marketing page — full-bleed gradient hero, centered 1200px content rail, alternating white / pale-blue panels */
+:root{
+  --violet:#7C4DFF;
+  --violet-deep:#5B2EE5;
+  --lime:#D6F84C;
+  --ink:#121B36;
+  --body:#5B6378;
+  --panel:#E9F5FD;
+  --line:#E8E8EF;
+  --paper:#FEFEFF;
+  --card:#FFFFFF;
+  --font-display:"Plus Jakarta Sans","Segoe UI",system-ui,-apple-system,sans-serif;
+  --font-body:"Plus Jakarta Sans","Segoe UI",system-ui,-apple-system,sans-serif;
+  color-scheme:light;
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:var(--font-body);
+  color:var(--ink);
+  background:var(--paper);
+  -webkit-font-smoothing:antialiased;
+}
+img,svg{max-width:100%}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid var(--violet);outline-offset:3px;border-radius:6px}
+
+.wrap{
+  max-width:1200px;
+  margin-inline:auto;
+  padding-left:max(16px,env(safe-area-inset-left,0px));
+  padding-right:max(16px,env(safe-area-inset-right,0px));
+}
+
+/* ---------- nav ---------- */
+.nav{position:relative;z-index:5}
+.nav .wrap{display:flex;align-items:center;gap:24px;padding-block:22px}
+.logo{display:flex;align-items:baseline;gap:7px;font-weight:800;letter-spacing:-.02em}
+.logo .mark{font-size:1.45rem;color:var(--violet)}
+.logo .word{font-size:1.1rem;font-weight:600;letter-spacing:.02em;color:var(--ink)}
+.navlinks{display:flex;gap:38px;margin-inline:auto;font-size:.95rem;font-weight:500;color:#404a63}
+.navlinks a{padding:6px 0;border-bottom:2px solid transparent;transition:border-color .2s,color .2s}
+.navlinks a:hover{color:var(--violet);border-bottom-color:var(--violet)}
+
+/* ---------- hero ---------- */
+.hero{
+  position:relative;
+  background:
+    radial-gradient(780px 540px at 88% 6%, #F2E6FF 0%, rgba(242,230,255,0) 62%),
+    radial-gradient(620px 520px at 99% 48%, #FEE7F2 0%, rgba(254,231,242,0) 60%),
+    radial-gradient(820px 620px at 4% 72%, #EAF1FF 0%, rgba(234,241,255,0) 66%),
+    var(--paper);
+}
+.hero .wrap{
+  display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);
+  align-items:center;gap:40px;padding-block:40px 110px;
+}
+h1{
+  font-family:var(--font-display);
+  font-size:clamp(2.6rem,5.6vw,4.3rem);
+  line-height:1.02;letter-spacing:-.035em;font-weight:600;
+  margin:0 0 26px;text-wrap:balance;
+}
+.lede{font-size:1.02rem;line-height:1.75;color:var(--body);max-width:30ch;margin:0 0 38px}
+.btn{
+  display:inline-flex;align-items:center;gap:10px;
+  padding:17px 30px;border-radius:999px;font-weight:600;font-size:.98rem;
+  background:var(--violet);color:#fff;border:0;cursor:pointer;
+  box-shadow:0 10px 24px -12px rgba(124,77,255,.9);
+  transition:transform .18s ease, box-shadow .18s ease, background .18s;
+}
+.btn:hover{background:var(--violet-deep);transform:translateY(-2px);box-shadow:0 16px 30px -14px rgba(91,46,229,.95)}
+.btn.dark{background:var(--ink);box-shadow:0 10px 24px -14px rgba(18,27,54,.9)}
+.btn.dark:hover{background:#1d2a53}
+
+.robot{position:relative;justify-self:center;width:min(100%,560px)}
+.robot .float{
+  position:absolute;top:4%;right:-2%;
+  display:flex;align-items:center;gap:12px;
+  background:var(--card);border-radius:16px;padding:14px 20px 14px 14px;
+  box-shadow:0 22px 46px -22px rgba(29,25,70,.38);
+}
+.float .tick{width:34px;height:34px;border-radius:999px;background:var(--lime);display:grid;place-items:center;flex:none}
+.float b{display:block;font-size:.95rem;font-weight:700;letter-spacing:-.01em}
+.float span{display:block;font-size:.76rem;color:var(--body);margin-top:1px}
+
+
+.robot canvas#bot{display:none;width:100%;aspect-ratio:480/470;touch-action:pan-y}
+.robot.live canvas#bot{display:block}
+.robot.live>svg{display:none}
+.robot .shadow{position:absolute;left:24%;right:24%;bottom:2%;height:6%;border-radius:50%;background:radial-gradient(closest-side,rgba(60,35,140,.28),transparent);display:none;animation:shadow 2.8s ease-in-out infinite}
+.robot.live .shadow{display:block}
+.robot .float{animation:bob 3.6s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+@keyframes shadow{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(.82);opacity:.7}}
+
+/* ---------- services ---------- */
+.section{padding-block:clamp(64px,8vw,104px)}
+.section-head{text-align:center;max-width:620px;margin:0 auto 56px}
+h2{
+  font-family:var(--font-display);font-weight:600;letter-spacing:-.03em;
+  font-size:clamp(2.1rem,4vw,3.1rem);line-height:1.1;margin:0 0 14px;text-wrap:balance;
+}
+.section-head p{margin:0;color:var(--body);font-size:1rem}
+.cards{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:24px}
+.cards .card{grid-column:span 2}
+.cards .card:nth-child(4){grid-column:2 / span 2}
+.cards .card:nth-child(5){grid-column:4 / span 2}
+.card{
+  background:var(--card);border:1px solid var(--line);border-radius:18px;padding:30px 28px 32px;
+  transition:border-color .2s, box-shadow .2s, transform .2s;
+}
+.card:hover{border-color:#D9D4F7;box-shadow:0 24px 40px -30px rgba(43,32,93,.5);transform:translateY(-3px)}
+.card h3{display:flex;align-items:center;gap:13px;margin:0 0 14px;font-size:1.22rem;font-weight:600;letter-spacing:-.02em}
+.chip{width:34px;height:34px;border-radius:10px;background:var(--lime);display:grid;place-items:center;flex:none}
+.card p{margin:0;color:var(--body);line-height:1.7;font-size:.95rem}
+
+/* ---------- about ---------- */
+.about{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(32px,6vw,96px);align-items:center}
+.globe-panel{background:var(--panel);border-radius:26px;padding:28px}
+.globe-stage{position:relative;aspect-ratio:1;max-width:100%;background:var(--card);border-radius:14px;overflow:hidden}
+.grid-lines{position:absolute;inset:0;
+  background-image:linear-gradient(to right,#F0F0F5 1px,transparent 1px),linear-gradient(to bottom,#F0F0F5 1px,transparent 1px);
+  background-size:9.09% 9.09%;
+}
+.globe{position:absolute;inset:0;width:100%;height:100%;display:block;cursor:grab;touch-action:pan-y}
+.globe:active{cursor:grabbing}
+.pin{position:absolute;left:0;top:0;transform:translate(-50%,-100%);text-align:center;pointer-events:none;transition:opacity .25s}
+.pin .flag{display:flex;flex-direction:column;width:28px;height:28px;border-radius:999px;overflow:hidden;margin:0 auto 6px;border:2px solid #fff;box-shadow:0 6px 14px -4px rgba(18,27,54,.55)}
+.pin .flag i{display:block;flex:1}
+.pin b{display:inline-block;background:#fff;border-radius:999px;padding:4px 11px;font-size:.8rem;font-weight:700;letter-spacing:-.01em;box-shadow:0 8px 18px -10px rgba(18,27,54,.5)}
+.pin::after{content:"";position:absolute;left:50%;bottom:-8px;width:8px;height:8px;margin-left:-4px;border-radius:50%;background:var(--violet);box-shadow:0 0 0 0 rgba(124,77,255,.5);animation:ping 2.2s infinite}
+@keyframes ping{0%{box-shadow:0 0 0 0 rgba(124,77,255,.55)}100%{box-shadow:0 0 0 16px rgba(124,77,255,0)}}
+.about-body h2{margin-bottom:20px}
+.about-body p{color:var(--body);line-height:1.75;margin:0 0 28px;font-size:1rem;max-width:46ch}
+.about-body p b{color:var(--ink);font-weight:700}
+.checks{list-style:none;margin:0;padding:0;display:grid;gap:14px}
+.checks li{display:flex;align-items:center;gap:12px;font-weight:500;font-size:1rem}
+.checks .dot{width:22px;height:22px;border-radius:999px;background:var(--violet);display:grid;place-items:center;flex:none}
+
+/* ---------- cta ---------- */
+.cta{
+  background:var(--panel);border-radius:26px;
+  display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:center;gap:24px;
+  padding:clamp(34px,5vw,56px);
+}
+.cta h2{margin-bottom:16px}
+.cta p{margin:0 0 32px;color:var(--body);line-height:1.7;max-width:34ch}
+.cta .art{justify-self:center;width:min(100%,460px)}
+
+/* ---------- footer ---------- */
+footer{padding-block:64px 44px;border-top:1px solid transparent}
+.footer-logo{display:flex;justify-content:center;margin-bottom:46px}
+.footer-bar{display:flex;align-items:center;justify-content:space-between;gap:20px;font-size:.88rem;color:var(--body)}
+.fb{width:22px;height:22px;color:var(--ink);opacity:.75}
+.fb:hover{opacity:1;color:var(--violet)}
+
+@media (max-width:900px){
+  .navlinks{display:none}
+  .logo{margin-inline:auto}
+  .hero .wrap{grid-template-columns:minmax(0,1fr);padding-block:24px 76px;text-align:center}
+  .lede{margin-inline:auto}
+  .robot{order:-1;width:min(100%,400px)}
+  .cards{grid-template-columns:minmax(0,1fr)}
+  .cards .card,.cards .card:nth-child(4),.cards .card:nth-child(5){grid-column:auto}
+  .about{grid-template-columns:minmax(0,1fr)}
+  .cta{grid-template-columns:minmax(0,1fr);text-align:center}
+  .cta p{margin-inline:auto}
+  .globe-panel{max-width:460px;margin-inline:auto}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important}
+}
+</style>
+
+</head>
+<body>
+<header class="nav">
+  <div class="wrap">
+    <a class="logo" href="#"><span class="mark">ai</span><span class="word">4 DESIGN</span></a>
+    <nav class="navlinks">
+      <a href="#">Pagrindinis</a>
+      <a href="#">ES Parama</a>
+      <a href="#kontaktai">Kontaktai</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <div>
+      <h1>DI sprendimų integravimas</h1>
+      <p class="lede">Mūsų komanda sujungia dirbtinį intelektą, patogų vartotojo dizainą ir patikimą IT infrastruktūrą, kad jūsų verslas veiktų greičiau, efektyviau ir saugiau.</p>
+      <a class="btn" href="#kontaktai">Susisiekite su mumis</a>
+    </div>
+
+    <div class="robot" id="robot">
+      <canvas id="bot" aria-label="3D robotas"></canvas><span class="shadow"></span>
+      <svg viewBox="0 0 480 470" role="img" aria-label="Draugiškas robotas">
+        <defs>
+          <linearGradient id="shell" x1="0" y1="0" x2="0.6" y2="1">
+            <stop offset="0" stop-color="#FAFAFC"/><stop offset=".55" stop-color="#E4E3EC"/><stop offset="1" stop-color="#C9C7D6"/>
+          </linearGradient>
+          <linearGradient id="shell2" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#F2F1F6"/><stop offset="1" stop-color="#CECCDB"/>
+          </linearGradient>
+          <linearGradient id="visor" x1=".15" y1="0" x2=".85" y2="1">
+            <stop offset="0" stop-color="#8E63FF"/><stop offset=".5" stop-color="#6B36F2"/><stop offset="1" stop-color="#4C1FD0"/>
+          </linearGradient>
+          <linearGradient id="antenna" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#9A74FF"/><stop offset="1" stop-color="#5A28E8"/>
+          </linearGradient>
+          <linearGradient id="bib" x1=".2" y1="0" x2=".8" y2="1">
+            <stop offset="0" stop-color="#8457FF"/><stop offset="1" stop-color="#4A1FCB"/>
+          </linearGradient>
+          <radialGradient id="eyeglow" cx=".5" cy=".5" r=".5">
+            <stop offset="0" stop-color="#FFFFFF" stop-opacity=".95"/><stop offset="1" stop-color="#D9C8FF" stop-opacity="0"/>
+          </radialGradient>
+          <filter id="soft" x="-30%" y="-30%" width="160%" height="160%">
+            <feGaussianBlur stdDeviation="9"/>
+          </filter>
+        </defs>
+
+        <!-- arms -->
+        <path d="M118 236c-32 6-54 30-50 52 4 23 34 33 64 24 22-7 36-22 36-38 0-20-21-42-50-38z" fill="url(#shell2)"/>
+        <path d="M352 300c28 18 44 46 36 66-9 21-40 24-66 6-19-13-28-31-23-45 6-18 32-38 53-27z" fill="url(#shell2)"/>
+
+        <!-- body -->
+        <ellipse cx="238" cy="330" rx="118" ry="96" fill="url(#shell)"/>
+        <path d="M168 300h142c0 48-32 84-71 84s-71-36-71-84z" fill="url(#bib)"/>
+        <path d="M160 298h156" stroke="#2A1560" stroke-width="5" stroke-linecap="round" opacity=".85"/>
+
+        <!-- antennae -->
+        <rect x="129" y="82" width="34" height="86" rx="17" transform="rotate(-14 146 125)" fill="url(#antenna)"/>
+        <rect x="312" y="82" width="34" height="86" rx="17" transform="rotate(14 329 125)" fill="url(#antenna)"/>
+        <!-- side pod -->
+        <ellipse cx="352" cy="190" rx="22" ry="26" fill="#3C1B9B"/>
+        <ellipse cx="348" cy="190" rx="18" ry="22" fill="#2B1176"/>
+
+        <!-- head -->
+        <rect x="118" y="112" width="240" height="190" rx="82" fill="url(#shell)"/>
+        <rect x="140" y="140" width="200" height="124" rx="58" fill="url(#visor)"/>
+        <ellipse cx="240" cy="202" rx="92" ry="54" fill="url(#eyeglow)" opacity=".28" filter="url(#soft)"/>
+        <path d="M184 214c6-24 20-36 34-36s28 12 34 36" fill="none" stroke="#FFFFFF" stroke-width="13" stroke-linecap="round"/>
+        <path d="M268 214c6-24 20-36 34-36s28 12 34 36" fill="none" stroke="#FFFFFF" stroke-width="13" stroke-linecap="round"/>
+        <rect x="150" y="150" width="88" height="34" rx="17" fill="#FFFFFF" opacity=".12"/>
+      </svg>
+
+      <div class="float">
+        <span class="tick" aria-hidden="true">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#121B36" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg>
+        </span>
+        <span>
+          <b>Užduotis atlikta</b>
+          <span>per 15sec.</span>
+        </span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Paslaugos</h2>
+      <p>Mes kuriame išmanius sprendimus, kurie padeda verslui augti.</p>
+    </div>
+    <div class="cards">
+      <article class="card">
+        <h3>
+          <span class="chip" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2E1A75" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="7" width="16" height="12" rx="4"/><path d="M12 3v4M9 13h.01M15 13h.01M9.5 16.5h5"/></svg>
+          </span>
+          DI integravimas
+        </h3>
+        <p>Siūlome DI sprendimus, kurie automatizuoja kasdienes užduotis.</p>
+      </article>
+      <article class="card">
+        <h3>
+          <span class="chip" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2E1A75" stroke-width="1.9" stroke-linecap="round"><path d="M12 4a8 8 0 1 1-8 8"/><path d="M12 8a4 4 0 1 1-4 4"/><path d="M12 12h.01"/></svg>
+          </span>
+          UI/UX dizainas
+        </h3>
+        <p>Mes kuriame patogius, intuityvius ir estetiškai patrauklius sprendimus:</p>
+      </article>
+      <article class="card">
+        <h3>
+          <span class="chip" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2E1A75" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="12" rx="2.5"/><path d="M8 20h8M12 17v3"/></svg>
+          </span>
+          IT priežiūra
+        </h3>
+        <p>Teikiame IT infrastruktūros priežiūros ir saugumo paslaugas.</p>
+      </article>
+      <article class="card">
+        <h3>
+          <span class="chip" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2E1A75" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M3 9h18M7 6.5h.01M10 6.5h.01"/></svg>
+          </span>
+          Internetinių puslapių kūrimas
+        </h3>
+        <p>Kuriame greitus, modernius ir lengvai valdomus internetinius puslapius jūsų verslui.</p>
+      </article>
+      <article class="card">
+        <h3>
+          <span class="chip" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2E1A75" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="3" width="10" height="18" rx="2.5"/><path d="M11 18h2"/></svg>
+          </span>
+          Programėlių kūrimas
+        </h3>
+        <p>Kuriame mobiliąsias ir interneto programėles, pritaikytas jūsų poreikiams.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="padding-top:0">
+  <div class="wrap about">
+    <div class="globe-panel">
+      <div class="globe-stage">
+        <div class="grid-lines"></div>
+        <canvas class="globe" id="globe" aria-label="Pasaulio gaublys su pažymėta Lietuva"></canvas>
+        <div class="pin" id="pin">
+          <span class="flag" aria-hidden="true">
+            <i style="background:#FDB913"></i><i style="background:#006A44"></i><i style="background:#C1272D"></i>
+          </span>
+          <b>Lietuva</b>
+        </div>
+      </div>
+    </div>
+    <div class="about-body">
+      <h2>Apie mus</h2>
+      <p><b>AI 4 DESIGN</b> – tai technologijų entuziastų komanda, suvienyta tikslo kurti išmanius ir vartotojui draugiškus sprendimus.</p>
+      <ul class="checks">
+        <li><span class="dot" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg></span>12 metų patirtis IT sektoriuje</li>
+        <li><span class="dot" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg></span>30+ patenkintų klientų</li>
+        <li><span class="dot" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg></span>Žmogiškas bendradarbiavimas</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="kontaktai" style="padding-top:0">
+  <div class="wrap">
+    <div class="cta">
+      <div>
+        <h2>Pasiruošę pradėti?</h2>
+        <p>Susisiekite su mumis dabar ir aptarsime kaip jūsų verslui pritaikyti AI sprendimus.</p>
+        <a class="btn dark" href="#kontaktai">Susisiekti
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg>
+        </a>
+      </div>
+      <div class="art">
+        <svg viewBox="0 0 480 400" role="img" aria-label="Abstrakti 3D forma">
+          <defs>
+            <radialGradient id="blob" cx=".35" cy=".3" r=".8">
+              <stop offset="0" stop-color="#9B7BFF"/><stop offset=".6" stop-color="#5B32F0"/><stop offset="1" stop-color="#3A17C4"/>
+            </radialGradient>
+            <linearGradient id="knot" x1=".1" y1="0" x2=".9" y2="1">
+              <stop offset="0" stop-color="#3C1C7A"/><stop offset=".45" stop-color="#1B0B3A"/><stop offset="1" stop-color="#2A0E52"/>
+            </linearGradient>
+            <linearGradient id="hot" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#FF3D7A"/><stop offset=".5" stop-color="#FF2E2E"/><stop offset="1" stop-color="#B51BE0"/>
+            </linearGradient>
+            <filter id="glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="7"/></filter>
+            <filter id="blobsoft" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="5"/></filter>
+          </defs>
+
+          <!-- purple blob cluster -->
+          <g filter="url(#blobsoft)" fill="url(#blob)">
+            <circle cx="104" cy="150" r="52"/>
+            <circle cx="158" cy="118" r="40"/>
+            <circle cx="152" cy="190" r="44"/>
+            <circle cx="92" cy="206" r="34"/>
+            <circle cx="68" cy="118" r="26"/>
+          </g>
+
+          <!-- dark twisted torus -->
+          <g transform="rotate(-18 300 220)">
+            <ellipse cx="300" cy="215" rx="150" ry="104" fill="none" stroke="url(#knot)" stroke-width="84"/>
+            <ellipse cx="300" cy="215" rx="150" ry="104" fill="none" stroke="#000" stroke-opacity=".35" stroke-width="84" stroke-dasharray="6 14"/>
+            <ellipse cx="300" cy="215" rx="150" ry="104" fill="none" stroke="#7A3BFF" stroke-opacity=".5" stroke-width="80" stroke-dasharray="2 16"/>
+            <ellipse cx="300" cy="215" rx="150" ry="104" fill="none" stroke="url(#hot)" stroke-width="7" stroke-dasharray="120 300" stroke-dashoffset="60" filter="url(#glow)"/>
+            <ellipse cx="300" cy="215" rx="150" ry="104" fill="none" stroke="#FF5C8A" stroke-width="2.5" stroke-dasharray="150 320" stroke-dashoffset="40"/>
+          </g>
+          <g transform="rotate(26 268 258)">
+            <ellipse cx="268" cy="258" rx="104" ry="62" fill="none" stroke="url(#knot)" stroke-width="62"/>
+            <ellipse cx="268" cy="258" rx="104" ry="62" fill="none" stroke="#000" stroke-opacity=".3" stroke-width="62" stroke-dasharray="5 12"/>
+            <ellipse cx="268" cy="258" rx="104" ry="62" fill="none" stroke="url(#hot)" stroke-width="5" stroke-dasharray="90 240" stroke-dashoffset="120" filter="url(#glow)"/>
+          </g>
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-logo">
+      <span class="logo"><span class="mark">ai</span><span class="word">4 DESIGN</span></span>
+    </div>
+    <div class="footer-bar">
+      <span>Copyright © 2025 AI 4 DESIGN. Visos teisės saugomos</span>
+      <a class="fb" href="#" aria-label="Facebook">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="9.2"/><path d="M13.6 8.6h1.6M13.6 8.6c0-1 .5-1.6 1.6-1.6M13.6 8.6v8.8M11.4 11.6h3.8" stroke-linecap="round"/></svg>
+      </a>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var MASK="AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAf4AP/gAAAAAAAAAAAAAAAAAAAAAAAX/z///+AAAAAAAABAAAAAAAAAAAAAYd8P///wAA+AAAAAA8AAAAAAAAAAAwAnw////4AAIAAAAAAGAAAAAAAAAAADivwAf//wAAAAADAAf/wAHYAAAAAADoi3sAP//gAAAAAMAD///sAAAAgBgACfwz/AD/+gAAA4AEHf///+/8gBAP/7/nJdjwD/+AAAH/AA7f///////f4P//////h8H/gAAAf/6//f////////Mf/////9H4D8AeAA+ev///////////AP/////4A0B4AAAD5/////////////Af3////gHgA4AAAH5///////////LwAHgH///gHkAAAAAH4/////////+CIAABAB///4D+AAAAGCx/////////4A8AAIAAf///n/gAAAOCD/////////wA4AAAAAf///n/wAAAbP///////////AgAAAAAP/////wAAADf//////////9AAAAAAAF////0YAAAB///////////9AAAAAAAD////8EAAAB///////////5AAAAAAAD////2AAAAB/f5fP//////wAAAAAAAD////gAAAAfxnwPP//////jAAAAAAAD////AAAAAPCb3/n/////+CAAAAAAAD///8AAAAAfALf/n////+ECAAAAAAAB///8AAAAAGHQP/n/////mMAAAAAAAA///8AAAAAH+Ai///////E8AAAAAAAAf//wAAAAAP/AA///////BgAAAAAAAAP//gAAAAAf/73///////gAAAAAAAAAD/AQAAAAAf////f/////gAAAAAAAAAF+AQAAAAB///+/n/////AAAAAAAAAAC+AAAAAAB///+f0H////AAAAAAAAAAAeAwAAAAD////f/B///8gAAAAAAAAAAeGEAAAAH////v+B/z/AAAAAAAAAAAAPMAgAAAD////n+A/B+gAAAAAAAAAAAD8AAAAAD////n4AeB/AgAAAAAAAAAAAPAAAAAH////3gAcAfAgAAAAAAAAAAADAAAAAD////6AAcAfggAAAAAAAAAAABDwAAAD////8wAMATAIAAAAAAAAAAAAr/AAAB/////gAKASAAAAAAAAAAAAAAH/gAAA/////gACAAAIAAAAAAAAAAAAH/8AAAaH///AAAAsGAAAAAAAAAAAAAH/+AAAAB//+AAAAUOAAAAAAAAAAAAAP/+AAAAB//8AAAAYegAAAAAAAAAAAAP//gAAAD//4AAAAMeBgAAAAAAAAAAAP//8AAAB//wAAAAGdiuAAAAAAAAAAAf///AAAA//wAAAACAQHgAAAAAAAAAAP///gAAA//wAAAABwAHwgAAAAAAAAAH///AAAA//wAAAAACIDQIAAAAAAAAAH//+AAAAf/wAAAAAAAAAAAAAAAAAAAD//+AAAA//wgAAAAABxAAAAAAAAAAAD//+AAAA//wgAAAAAPxgBAAAAAAAAAA//8AAAA//jgAAAAAf5gAAAAAAAAAAAf/8AAAA//DgAAAAAf/gAAAAAAAAAAAf/8AAAAf/DAAAAAD//4CAAAAAAAAAAf/wAAAAf/DAAAAAH//4AAAAAAAAAAAf/AAAAAf+CAAAAAH//8AAAAAAAAAAAf/AAAAAP8AAAAAAH//+AAAAAAAAAAA/+AAAAAP8AAAAAAH//+AAAAAAAAAAA/+AAAAAH4AAAAAAD//+AAAAAAAAAAA/8AAAAAHwAAAAAADwf8AAAAAAAAAAA/gAAAAAAAAAAAAACAH4AIAAAAAAAAB/wAAAAAAAAAAAAAAAD4AEAAAAAAAAB+AAAAAAAAAAAAAAAAAAAGAAAAAAAAB6AAAAAAAAAAAAAAAAAwAMAAAAAAAAA8AAAAAAAAAAAAAAAAAQAYAAAAAAAAB4AAAAAAAAAAAAAAAAAAAwAAAAAAAAB4AAAAAAAAAAAAAAAAAAAAAAAAAAAADwAAAAAAAAAACAAAAAAAAAAAAAAAAADgAAAAAAAAAAAAAAAAAAAAAAAAAAAABwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMAAAAAAAAAeAAIP+f/gAAAAAAAAAAAMAAAAAAABP/+H//////AAAAAAAAAAA+AAAAAf////8////////AAAAAAAOEAPAAAB///////////////gAAAP//T//8AAAH//////////////+AAAH/////4AAAH///////////////8AAE//////4ABw////////////////8AAAD//////gCA////////////////wAAAf/////////////////////////+A/4A///////////////////////////////////////////////////////////////////////////////////////";
+  var W=180,H=90,bin=atob(MASK),land=new Uint8Array(W*H);
+  for(var i=0;i<W*H;i++)land[i]=(bin.charCodeAt(i>>3)>>(7-(i&7)))&1;
+  function isLand(lat,lon){
+    var x=Math.floor((lon+180)/2)%W,y=Math.floor((90-lat)/2);
+    if(x<0)x+=W; if(y<0)y=0; if(y>=H)y=H-1;
+    return land[y*W+x]===1;
+  }
+  var cv=document.getElementById('globe'),pin=document.getElementById('pin'),ctx=cv.getContext('2d');
+  var R=Math.PI/180,LT_LAT=55.2,LT_LON=23.9,TILT=22;
+  // dot grid on sphere (Fibonacci) with land flag
+  var N=7000,pts=[],ga=Math.PI*(3-Math.sqrt(5));
+  for(var k=0;k<N;k++){
+    var z=1-2*(k+.5)/N,r=Math.sqrt(1-z*z),th=ga*k;
+    var lat=Math.asin(z)/R,lon=((th/R)%360+540)%360-180;
+    if(isLand(lat,lon))pts.push([r*Math.cos(th),r*Math.sin(th),z,lat,lon]);
+  }
+  // lat/lon -> 3D (x east, y north-ish handled in rotate)
+  function ll(lat,lon){var a=lat*R,b=lon*R;return[Math.cos(a)*Math.cos(b),Math.cos(a)*Math.sin(b),Math.sin(a)];}
+  var P=pts.map(function(p){return ll(p[3],p[4]);});
+  var lon0=LT_LON,drag=false,lastX=0,t0=performance.now(),size=0,dpr=1;
+  function resize(){
+    var b=cv.getBoundingClientRect();dpr=Math.min(window.devicePixelRatio||1,2);size=b.width;
+    cv.width=Math.round(b.width*dpr);cv.height=Math.round(b.height*dpr);
+  }
+  function rot(v,l0,tilt){
+    // rotate about north axis by -l0, then tilt so lat tilt faces viewer
+    var c=Math.cos(-l0*R),s=Math.sin(-l0*R);
+    var x=v[0]*c-v[1]*s,y=v[0]*s+v[1]*c,z=v[2];
+    var ct=Math.cos((tilt)*R),st=Math.sin((tilt)*R);
+    // after: viewer looks along +x; screen right = y, screen up = z
+    var x2=x*ct+z*st,z2=-x*st+z*ct;
+    return[x2,y,z2];
+  }
+  function draw(now){
+    if(!drag)lon0=LT_LON+Math.sin((now-t0)/3800)*28;
+    var w=size,h=size,cx=w/2,cy=h/2,rad=w*.36;
+    ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,w,h);
+    var tilt=LT_LAT-30; // pitch so Lithuania sits upper-centre
+    // sphere body
+    var g=ctx.createRadialGradient(cx-rad*.4,cy-rad*.45,rad*.1,cx,cy,rad*1.02);
+    g.addColorStop(0,'#FFFFFF');g.addColorStop(.7,'#F1EEFB');g.addColorStop(1,'#DCD6F3');
+    ctx.fillStyle=g;ctx.beginPath();ctx.arc(cx,cy,rad,0,6.2832);ctx.fill();
+    // halo
+    var hg=ctx.createRadialGradient(cx,cy,rad,cx,cy,rad*1.18);
+    hg.addColorStop(0,'rgba(124,77,255,.16)');hg.addColorStop(1,'rgba(124,77,255,0)');
+    ctx.fillStyle=hg;ctx.beginPath();ctx.arc(cx,cy,rad*1.18,0,6.2832);ctx.fill();
+    // land dots
+    var dr=Math.max(1.05,w*.0042);
+    for(var i=0;i<P.length;i++){
+      var q=rot(P[i],lon0,tilt);
+      if(q[0]<=0.02)continue;
+      var d=q[0],sx=cx+q[1]*rad,sy=cy-q[2]*rad;
+      var a=.28+.72*d;
+      ctx.fillStyle='rgba(92,70,170,'+a.toFixed(3)+')';
+      ctx.beginPath();ctx.arc(sx,sy,dr*(.55+.45*d),0,6.2832);ctx.fill();
+    }
+    // specular
+    var sp=ctx.createRadialGradient(cx-rad*.45,cy-rad*.5,0,cx-rad*.45,cy-rad*.5,rad*.7);
+    sp.addColorStop(0,'rgba(255,255,255,.55)');sp.addColorStop(1,'rgba(255,255,255,0)');
+    ctx.fillStyle=sp;ctx.beginPath();ctx.arc(cx,cy,rad,0,6.2832);ctx.fill();
+    // Lithuania marker
+    var m=rot(ll(LT_LAT,LT_LON),lon0,tilt);
+    if(m[0]>0.12){
+      var px=cx+m[1]*rad,py=cy-m[2]*rad;
+      pin.style.opacity=1;pin.style.left=(px/w*100)+'%';pin.style.top=((py-9)/h*100)+'%';
+    }else pin.style.opacity=0;
+  }
+  var reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function loop(now){draw(now);if(!reduce)requestAnimationFrame(loop);}
+  cv.addEventListener('pointerdown',function(e){drag=true;lastX=e.clientX;cv.setPointerCapture(e.pointerId);});
+  cv.addEventListener('pointermove',function(e){if(!drag)return;lon0-=(e.clientX-lastX)*.45;lastX=e.clientX;if(reduce)draw(0);});
+  function end(){if(!drag)return;drag=false;t0=performance.now()-Math.asin(Math.max(-1,Math.min(1,(lon0-LT_LON)/28)))*3800;}
+  cv.addEventListener('pointerup',end);cv.addEventListener('pointercancel',end);
+  window.addEventListener('resize',function(){resize();draw(performance.now());});
+  resize();draw(performance.now());if(!reduce)requestAnimationFrame(loop);
+})();
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function(){
+  if(!window.THREE)return;
+  var T=THREE,box=document.getElementById('robot'),cv=document.getElementById('bot');
+  var renderer;
+  try{renderer=new T.WebGLRenderer({canvas:cv,alpha:true,antialias:true});}catch(e){return;}
+  renderer.outputEncoding=T.sRGBEncoding;renderer.setClearColor(0x000000,0);
+  var scene=new T.Scene(),cam=new T.PerspectiveCamera(32,480/470,.1,50);
+  cam.position.set(0,.5,9.8);cam.lookAt(0,.5,0);
+
+  scene.add(new T.HemisphereLight(0xffffff,0xcfc6f0,.7));
+  var key=new T.DirectionalLight(0xffffff,.95);key.position.set(3,5,6);scene.add(key);
+  var rim=new T.PointLight(0x9a74ff,1.0,30);rim.position.set(-5,1.5,3);scene.add(rim);
+  var fill=new T.PointLight(0xffd6ec,.45,30);fill.position.set(5,-2,4);scene.add(fill);
+
+  var shell=new T.MeshPhysicalMaterial({color:0xeeeef4,roughness:.38,metalness:0,clearcoat:.7,clearcoatRoughness:.3});
+  var violet=new T.MeshPhysicalMaterial({color:0x6e43f2,roughness:.28,clearcoat:1,clearcoatRoughness:.15});
+  var visorM=new T.MeshPhysicalMaterial({color:0x5b2de2,roughness:.12,metalness:.05,clearcoat:1,clearcoatRoughness:.05,emissive:0x2a0f86,emissiveIntensity:.55});
+  var dark=new T.MeshStandardMaterial({color:0x2c1478,roughness:.4});
+  var white=new T.MeshBasicMaterial({color:0xffffff});
+  [shell,violet,visorM,dark].forEach(function(m){m.color.convertSRGBToLinear();if(m.emissive)m.emissive.convertSRGBToLinear();});
+
+  function ell(mat,sx,sy,sz,x,y,z){var m=new T.Mesh(new T.SphereGeometry(1,48,32),mat);m.scale.set(sx,sy,sz);m.position.set(x||0,y||0,z||0);return m;}
+
+  var root=new T.Group();scene.add(root);
+
+  // body
+  var body=ell(shell,1.08,.92,.96,0,-1.05,0);root.add(body);
+  var bib=ell(violet,.54,.7,.24,0,-1.14,.86);root.add(bib);
+  var collar=new T.Mesh(new T.TorusGeometry(.62,.035,10,48),dark);collar.rotation.x=Math.PI/2;collar.position.set(0,-.34,.1);collar.scale.set(1.15,1,.8);root.add(collar);
+
+  // arms
+  var armL=new T.Group();armL.position.set(-1.0,-.62,.05);root.add(armL);
+  armL.add(ell(shell,.3,.62,.3,0,-.52,0));
+  var armR=new T.Group();armR.position.set(1.0,-.7,.05);root.add(armR);
+  armR.add(ell(shell,.3,.62,.3,0,-.52,0));
+
+  // head group
+  var head=new T.Group();head.position.set(0,.72,0);root.add(head);
+  head.add(ell(shell,1.3,1.0,1.06,0,0,0));
+  head.add(ell(visorM,.98,.64,.42,0,-.02,.72));
+  var gloss=ell(new T.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:.18}),.38,.12,.05,-.42,.3,1.11);gloss.rotation.z=.12;head.add(gloss);
+  var eyes=new T.Group();eyes.position.set(0,-.1,1.15);head.add(eyes);
+  [-.36,.36].forEach(function(x){
+    var e=new T.Mesh(new T.TorusGeometry(.2,.052,14,40,Math.PI),white);e.position.set(x,-.02,0);
+    var capA=ell(white,.052,.052,.052,x+.2,-.02,0),capB=ell(white,.052,.052,.052,x-.2,-.02,0);
+    eyes.add(e,capA,capB);
+  });
+  [-1,1].forEach(function(sd){
+    var pod=new T.Mesh(new T.CylinderGeometry(.32,.32,.3,32),dark);pod.rotation.z=Math.PI/2;pod.position.set(sd*1.36,.05,0);
+    pod.scale.set(1,1,1.25);head.add(pod);
+  });
+  var ant=[];
+  [-1,1].forEach(function(sd){
+    var g=new T.Group();g.position.set(sd*.82,.86,-.15);
+    var m=ell(violet,.2,.5,.2,0,.4,0);g.add(m);
+    g.userData={base:sd*-.24,sd:sd};g.rotation.z=g.userData.base;head.add(g);ant.push(g);
+  });
+
+  function resize(){
+    var w=box.clientWidth,h=Math.round(w*470/480);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
+    renderer.setSize(w,h,false);render(cur);
+  }
+  var reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var px=0,py=0,tx=0,ty=0,cur=0,nextBlink=2.5;
+  box.addEventListener('pointermove',function(e){
+    var r=box.getBoundingClientRect();tx=((e.clientX-r.left)/r.width-.5)*2;ty=((e.clientY-r.top)/r.height-.5)*2;});
+  box.addEventListener('pointerleave',function(){tx=0;ty=0;});
+  document.addEventListener('pointermove',function(e){
+    if(box.matches(':hover'))return;
+    tx=(e.clientX/innerWidth-.5)*1.2;ty=(e.clientY/innerHeight-.5)*1.0;});
+
+  function render(t){
+    px+=(tx-px)*.06;py+=(ty-py)*.06;
+    root.position.y=Math.sin(t*1.75)*.13;
+    root.rotation.y=Math.sin(t*.7)*.12+px*.18;
+    head.rotation.y=px*.38;head.rotation.x=py*.2;head.rotation.z=Math.sin(t*1.1)*.035;
+    var wave=Math.sin(t*5.2);
+    armL.rotation.z=-2.35+wave*.32;armL.rotation.x=0;
+    armR.rotation.z=.5+Math.sin(t*1.75+1)*.05;
+    ant.forEach(function(g,i){g.rotation.z=g.userData.base+Math.sin(t*2.2+i*1.6)*.07;});
+    // blink
+    var b=1;
+    if(t>nextBlink){var k=(t-nextBlink)/.16;if(k<1)b=1-Math.sin(k*Math.PI)*.9;else nextBlink=t+2.4+Math.random()*2.4;}
+    eyes.scale.y=b;
+    renderer.render(scene,cam);
+  }
+  function loop(ms){cur=ms/1000;render(cur);requestAnimationFrame(loop);}
+  box.classList.add('live');
+  resize();
+  if('ResizeObserver' in window)new ResizeObserver(resize).observe(box);else addEventListener('resize',resize);
+  if(!reduce)requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>
